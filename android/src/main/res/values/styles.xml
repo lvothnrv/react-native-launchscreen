@@ -1,0 +1,12 @@
+<resources>
+    <style name="LaunchScreen_LaunchAnimation">
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
+
+    <style name="LaunchScreen_LaunchTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowAnimationStyle">@style/LaunchScreen_LaunchAnimation</item>
+    </style>
+    <style name="LaunchScreen_Fullscreen" parent="LaunchScreen_LaunchTheme">
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>

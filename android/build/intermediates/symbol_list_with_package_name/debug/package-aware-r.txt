@@ -1,0 +1,6 @@
+com.lvothnrv.launchscreen
+layout launch_screen
+string app_name
+style LaunchScreen_Fullscreen
+style LaunchScreen_LaunchAnimation
+style LaunchScreen_LaunchTheme

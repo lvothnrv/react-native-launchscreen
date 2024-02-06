@@ -1,0 +1,32 @@
+{
+  "name": "@lvothnrv/react-native-launchscreen",
+  "version": "0.0.1",
+  "description": "A React Native launch screen based on react-native-splash-screen and react-native-bootsplash, compatible with both iOS and Android platforms.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lvothnrv/react-native-launchscreen.git"
+  },
+  "keywords": [
+    "react-native",
+    "react-native-launchscreen",
+    "splash-screen",
+    "splashscreen",
+    "boot-splash",
+    "bootsplash",
+    "launch-screen",
+    "launchscreen",
+    "splash",
+    "android",
+    "ios"
+  ],
+  "author": "lvothnrv",
+  "license": "MIT",
+  "peerDependencies": {
+    "react-native": ">=0.60.0"
+  },
+  "homepage": "https://github.com/lvothnrv/react-native-launchscreen#readme"
+}
