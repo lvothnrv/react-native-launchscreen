@@ -6,19 +6,19 @@
 //
 
 #import "LaunchScreen.h"
-
 #import <React/RCTUtils.h>
 
 #if RCT_NEW_ARCH_ENABLED
-  #import <React/RCTSurfaceHostingProxyRootView.h>
-  #import <React/RCTSurfaceHostingView.h>
+#import <React/RCTSurfaceHostingProxyRootView.h>
+#import <React/RCTSurfaceHostingView.h>
+static RCTSurfaceHostingProxyRootView *_rootView = nil;
 #else
-  #import <React/RCTRootView.h>
+#import <React/RCTRootView.h>
+static UIView *_rootView = nil;
 #endif
 
-static NSMutableArray<RCTPromiseResolveBlock> *_resolveQueue = [[NSMutableArray alloc] init];
 static UIView *_loadingView = nil;
-static UIView *_rootView = nil;
+static NSMutableArray<RCTPromiseResolveBlock> *_resolveQueue = [[NSMutableArray alloc] init];
 static bool _nativeHidden = false;
 
 @implementation LaunchScreen
@@ -53,15 +53,14 @@ RCT_EXPORT_MODULE();
   dispatch_async(dispatch_get_main_queue(), ^{
     [UIView transitionWithView:_rootView
                       duration:0.250
-                        options:UIViewAnimationOptionTransitionCrossDissolve
+                       options:UIViewAnimationOptionTransitionCrossDissolve
                     animations:^{
       _loadingView.hidden = YES;
     }
                     completion:^(__unused BOOL finished) {
       [_loadingView removeFromSuperview];
       _loadingView = nil;
-
-      return [LaunchScreen clearResolveQueue];
+      [LaunchScreen clearResolveQueue];
     }];
   });
 }
@@ -72,49 +71,49 @@ RCT_EXPORT_MODULE();
     return;
   }
 
-  static dispatch_once_t onceToken;
+  [NSTimer scheduledTimerWithTimeInterval:0.35
+                                  repeats:NO
+                                    block:^(NSTimer * _Nonnull timer) {
+    // Attendre la fin de l'animation du launch screen natif
+    _nativeHidden = true;
 
-  dispatch_once(&onceToken, ^(void) {
-    [NSTimer scheduledTimerWithTimeInterval:0.35
-                                    repeats:NO
-                                      block:^(NSTimer * _Nonnull timer) {
-      // wait for native iOS launch screen to fade out
-      _nativeHidden = true;
-
-      // hide has been called before native launch screen fade out
-      if ([_resolveQueue count] > 0) {
-        [self hideAndClearPromiseQueue];
-      }
-    }];
-
-#ifdef RCT_NEW_ARCH_ENABLED
-    if (rootView != nil && [rootView isKindOfClass:[RCTSurfaceHostingProxyRootView class]]) {
-      _rootView = [(RCTSurfaceHostingProxyRootView *)rootView view];
-#else
-    if (rootView != nil && [rootView isKindOfClass:[RCTRootView class]]) {
-      _rootView = (RCTRootView *)rootView;
-#endif
-      UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
-
-      _loadingView = [[storyboard instantiateInitialViewController] view];
-      _loadingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-      _loadingView.frame = _rootView.bounds;
-      _loadingView.center = (CGPoint){CGRectGetMidX(_rootView.bounds), CGRectGetMidY(_rootView.bounds)};
-      _loadingView.hidden = NO;
-
-      [_rootView addSubview:_loadingView];
-
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(onJavaScriptDidLoad)
-                                                   name:RCTJavaScriptDidLoadNotification
-                                                 object:nil];
-
-      [[NSNotificationCenter defaultCenter] addObserver:self
-                                               selector:@selector(onJavaScriptDidFailToLoad)
-                                                   name:RCTJavaScriptDidFailToLoadNotification
-                                                 object:nil];
+    if ([_resolveQueue count] > 0) {
+      [self hideAndClearPromiseQueue];
     }
-  });
+  }];
+
+  if (rootView != nil) {
+#ifdef RCT_NEW_ARCH_ENABLED
+    _rootView = (RCTSurfaceHostingProxyRootView *)rootView;
+#else
+    _rootView = (RCTRootView *)rootView;
+#endif
+
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle:nil];
+
+    _loadingView = [[storyboard instantiateInitialViewController] view];
+    _loadingView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+    _loadingView.frame = _rootView.bounds;
+    _loadingView.center = (CGPoint){CGRectGetMidX(_rootView.bounds), CGRectGetMidY(_rootView.bounds)};
+    _loadingView.hidden = NO;
+
+#if RCT_NEW_ARCH_ENABLED
+    [_rootView disableActivityIndicatorAutoHide:YES];
+    [_rootView setLoadingView:_loadingView];
+#else
+    [_rootView addSubview:_loadingView];
+#endif
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onJavaScriptDidLoad)
+                                                 name:RCTJavaScriptDidLoadNotification
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onJavaScriptDidFailToLoad)
+                                                 name:RCTJavaScriptDidFailToLoadNotification
+                                               object:nil];
+  }
 }
 
 + (void)onJavaScriptDidLoad {
@@ -127,10 +126,15 @@ RCT_EXPORT_MODULE();
 }
 
 - (NSDictionary *)constantsToExport {
+  __block BOOL darkModeEnabled = NO;
+
+  RCTUnsafeExecuteOnMainQueueSync(^{
+    UIWindow *window = RCTKeyWindow();
+    darkModeEnabled = window.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark;
+  });
+
   return @{
-    @"logoSizeRatio": @(1),
-    @"navigationBarHeight": @(0),
-    @"statusBarHeight": @(0)
+    @"darkModeEnabled": @(darkModeEnabled)
   };
 }
 
@@ -147,23 +151,21 @@ RCT_EXPORT_MODULE();
 }
 
 #ifdef RCT_NEW_ARCH_ENABLED
-  - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params {
-    return std::make_shared<facebook::react::NativeLaunchScreenSpecJSI>(params);
-  }
+// Nouvelle architecture
+- (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:(const facebook::react::ObjCTurboModule::InitParams &)params {
+  return std::make_shared<facebook::react::NativeLaunchScreenSpecJSI>(params);
+}
 
-  -(facebook::react::ModuleConstants<JS::NativeLaunchScreen::Constants::Builder>)getConstants {
-    return [self constantsToExport];
-  }
-
-  - (void)hide:(RCTPromiseResolveBlock)resolve
-        reject:(RCTPromiseRejectBlock)reject {
-    [self hideImpl:resolve];    
-  }
+- (void)hide:(RCTPromiseResolveBlock)resolve
+      reject:(RCTPromiseRejectBlock)reject {
+  [self hideImpl:resolve];
+}
 #else
-  RCT_EXPORT_METHOD(hide:(RCTPromiseResolveBlock)resolve
-                    reject:(RCTPromiseRejectBlock)reject) {
-    [self hideImpl:resolve];    
-  }
+// Ancienne architecture
+RCT_EXPORT_METHOD(hide:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  [self hideImpl:resolve];
+}
 #endif
 
 @end

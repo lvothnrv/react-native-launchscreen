@@ -1,6 +1,6 @@
 {
   "name": "@lvothnrv/react-native-launchscreen",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A React Native launch screen based on react-native-splash-screen and react-native-bootsplash, compatible with both iOS and Android platforms.",
   "main": "index.js",
   "scripts": {

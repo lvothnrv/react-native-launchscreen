@@ -1,5 +1,0 @@
-int layout launch_screen 0x0
-int string app_name 0x0
-int style LaunchScreen_Fullscreen 0x0
-int style LaunchScreen_LaunchAnimation 0x0
-int style LaunchScreen_LaunchTheme 0x0

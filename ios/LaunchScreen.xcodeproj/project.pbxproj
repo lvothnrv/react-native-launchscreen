@@ -8,37 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		9E413C3D2B720D4200174AA7 /* LaunchScreen.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9E413C3C2B720D4200174AA7 /* LaunchScreen.mm */; };
-		9E413C3E2B720D4200174AA7 /* LaunchScreen.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9E413C3B2B720D4200174AA7 /* LaunchScreen.h */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		9E413C362B720D4200174AA7 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "include/$(PRODUCT_NAME)";
-			dstSubfolderSpec = 16;
-			files = (
-				9E413C3E2B720D4200174AA7 /* LaunchScreen.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		9E413C382B720D4200174AA7 /* libLaunchScreen.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libLaunchScreen.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E413C3B2B720D4200174AA7 /* LaunchScreen.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LaunchScreen.h; sourceTree = "<group>"; };
 		9E413C3C2B720D4200174AA7 /* LaunchScreen.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LaunchScreen.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFrameworksBuildPhase section */
-		9E413C352B720D4200174AA7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		9E413C2F2B720D4200174AA7 = {
@@ -66,8 +42,6 @@
 			buildConfigurationList = 9E413C412B720D4200174AA7 /* Build configuration list for PBXNativeTarget "LaunchScreen" */;
 			buildPhases = (
 				9E413C342B720D4200174AA7 /* Sources */,
-				9E413C352B720D4200174AA7 /* Frameworks */,
-				9E413C362B720D4200174AA7 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -241,32 +215,20 @@
 		9E413C422B720D4200174AA7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3353784359;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../React/**/**",
-					"$(SRCROOT)/../../react-native/React/**/**",
-				);
+				MTL_ENABLE_DEBUG_INFO = YES;
+				MTL_FAST_MATH = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		9E413C432B720D4200174AA7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 3353784359;
-				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/../../../React/**/**",
-					"$(SRCROOT)/../../react-native/React/**/**",
-				);
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = "";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
