@@ -12,11 +12,35 @@ yarn add @lvothnrv/react-native-launchscreen
 
 ### iOS
 
-1. Edit the `ios/YourProjectName/AppDelegate.mm` file:
+#### react-native 0.77+
+
+Edit your `ios/YourApp/AppDelegate.swift` file:
+
+```swift
+import ReactAppDependencyProvider
+import LaunchScreen // ⬅️ add this import
+
+// …
+
+@main
+class AppDelegate: RCTAppDelegate {
+  // …
+
+  // ⬇️ override this method
+  override func customize(_ rootView: RCTRootView!) {
+    super.customize(rootView)
+    LaunchScreen.initWithStoryboard("LaunchScreen", rootView: rootView) // ⬅️ initialize the splash screen
+  }
+}
+```
+
+#### react-native < 0.77
+
+Edit your `ios/YourApp/AppDelegate.mm` file:
 
 ```obj-c
 #import "AppDelegate.h"
-#import "LaunchScreen.h" // ⬅️ add the header import
+#import "LaunchScreen.h" // ⬅️ add this import
 
 // …
 
@@ -24,16 +48,20 @@ yarn add @lvothnrv/react-native-launchscreen
 
 // …
 
-// ⬇️ Add this before file @end
+// ⬇️ Add this method before file @end (for react-native 0.74+)
+- (void)customizeRootView:(RCTRootView *)rootView {
+  [super customizeRootView:rootView];
+  [LaunchScreen initWithStoryboard:@"LaunchScreen" rootView:rootView]; // ⬅️ initialize the splash screen
+}
+
+// OR
+
+// ⬇️ Add this method before file @end (for react-native < 0.74)
 - (UIView *)createRootViewWithBridge:(RCTBridge *)bridge
                           moduleName:(NSString *)moduleName
                            initProps:(NSDictionary *)initProps {
-  UIView *rootView = [super createRootViewWithBridge:bridge
-                                          moduleName:moduleName
-                                           initProps:initProps];
-
-  [LaunchScreen initWithStoryboard:@"LaunchScreen" rootView:rootView];
-
+  UIView *rootView = [super createRootViewWithBridge:bridge moduleName:moduleName initProps:initProps];
+  [LaunchScreen initWithStoryboard:@"LaunchScreen" rootView:rootView]; // ⬅️ initialize the splash screen
   return rootView;
 }
 
@@ -42,24 +70,43 @@ yarn add @lvothnrv/react-native-launchscreen
 
 2. Create a `LaunchScreen.storyboard` (which is typically already created) and modify it as desired.
 
-### Android
+#### Android
 
-1. Update the `MainActivity.java` to use `react-native-launchscreen` via the following changes:
+Edit your `android/app/src/main/java/com/yourapp/MainActivity.{java,kt}` file:
+
+#### Java (react-native < 0.73)
 
 ```java
-import android.os.Bundle; // here
-import com.facebook.react.ReactActivity;
-
-import com.lvothnrv.launchscreen.LaunchScreen; // here
-
+// add these required imports:
+import android.os.Bundle;
+import com.lvothnrv.launchscreen.LaunchScreen;
 
 public class MainActivity extends ReactActivity {
-   @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        LaunchScreen.show(this);  // here
-        super.onCreate(savedInstanceState);
-    }
-    // ...other code
+
+  // …
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+    LaunchScreen.init(this, R.style.BootTheme); // ⬅️ initialize the splash screen
+    super.onCreate(savedInstanceState); // super.onCreate(null) with react-native-screens
+  }
+}
+```
+
+#### Kotlin (react-native >= 0.73)
+```kotlin
+// add these required imports:
+import android.os.Bundle
+import com.lvothnrv.launchscreen.LaunchScreen
+
+class MainActivity : ReactActivity() {
+
+  // …
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    LaunchScreen.init(this, R.style.BootTheme) // ⬅️ initialize the splash screen
+    super.onCreate(savedInstanceState) // super.onCreate(null) with react-native-screens
+  }
 }
 ```
 
@@ -76,12 +123,13 @@ public class MainActivity extends ReactActivity {
 
 Customize your launch screen by creating a `launch_screen.png`-file and placing it in an appropriate `drawable`-folder. Android automatically scales drawable, so you do not necessarily need to provide images for all phone densities.
 You can create splash screens in the following folders:
-* `drawable-ldpi`
-* `drawable-mdpi`
-* `drawable-hdpi`
-* `drawable-xhdpi`
-* `drawable-xxhdpi`
-* `drawable-xxxhdpi`
+
+- `drawable-ldpi`
+- `drawable-mdpi`
+- `drawable-hdpi`
+- `drawable-xhdpi`
+- `drawable-xxhdpi`
+- `drawable-xxxhdpi`
 
 ## API
 
@@ -118,7 +166,7 @@ const App = () => {
 };
 ```
 
-## Why 
+## Why
 
 This module is a combination of two existing modules: react-native-splash-screen and react-native-bootsplash. I developed this module by leveraging these two for two main reasons:
 
