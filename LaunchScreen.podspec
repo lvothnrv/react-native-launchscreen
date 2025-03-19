@@ -17,6 +17,8 @@ Pod::Spec.new do |s|
   s.source       = { :git => package["repository"]["url"], :tag => s.version }
   s.source_files = "ios/**/*.{h,m,mm}"
 
+  s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
+
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
     install_modules_dependencies(s)
   else
